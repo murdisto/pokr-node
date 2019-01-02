@@ -19,10 +19,16 @@ app.use(
   })
 );
 
-app.get('/api/stat', (req, res) => {
-  return res.json({
-    hello: "there",
-  });
+const locations = [
+  'Mandalay Bay',
+  'The Venetian',
+  'Red Rock',
+];
+
+
+app.get('/api/locations', (req, res) => {
+  console.log("this is from the get end point");
+  return res.json(locations);
 });
 
 function runServer(port = PORT) {
