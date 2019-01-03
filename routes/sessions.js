@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get('/', (req, res, next) => {
   Session.find()
+    .sort({ createdAt: 'desc' })
     .then(sessions => {
       res.json(sessions);
     })

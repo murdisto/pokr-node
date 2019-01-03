@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const sessionSchema = new mongoose.Schema({
   location: {type: String, required: true},
-  date: String,
+  date: {type: String,required: true},
   game: {type: String},
   stakes: {type: String},
-  cashIn: {type: Number, required: true},
-  cashOut: {type: Number, required: true},
-  hours: {type: Number, required: true},
-  minutes: {type: Number, required: true}
+  cashIn: {type: Number, required: false},
+  cashOut: {type: Number, required: false},
+  hours: {type: Number, required: false},
+  minutes: {type: Number, required: false}
 });
 
 // Add `createdAt` and `updatedAt` fields
