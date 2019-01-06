@@ -2,19 +2,22 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const passport = require('passport');
+
+const localStrategy = require('./passport/local');
+const jwtStrategy = require('./passport/jwt');
+
 
 const sessionsRouter = require('./routes/sessions');
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 
-const { PORT, CLIENT_ORIGIN } = require('./config');
-const { dbConnect } = require('./db-mongoose');
+
+const {CLIENT_ORIGIN, PORT, MONGODB_URI } = require('./config');
+
+
 
 const app = express();
-
-app.use(
-  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
-    skip: () => process.env.NODE_ENV === 'test'
-  })
-);
 
 app.use(
   cors({
@@ -22,9 +25,25 @@ app.use(
   })
 );
 
+app.use(
+  morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
+    skip: () => process.env.NODE_ENV === 'test'
+  })
+);
+
 app.use(express.json());
 
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+const options = {session: false, failWithError: true};
+console.log();
+
 app.use('/', sessionsRouter);
+app.use('/users', usersRouter);
+app.use('/login', authRouter);
+
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
@@ -43,32 +62,21 @@ app.use((err, req, res, next) => {
   }
 });
 
-// const locations = [
-//   'Mandalay Bay',
-//   'The Venetian',
-//   'Red Rock',
-// ];
-// app.get('/api/locations', (req, res) => {
-//   console.log("this is from the get end point");
-//   return res.json(locations);
-// });
-
-
-
-function runServer(port = PORT) {
-  const server = app
-    .listen(port, () => {
-      console.info(`App listening on port ${server.address().port}`);
-    })
-    .on('error', err => {
-      console.error('Express failed to start');
-      console.error(err);
-    });
-}
 
 if (require.main === module) {
-  dbConnect();
-  runServer();
+  //  // Connect to DB and Listen for incoming connections
+  mongoose.connect(MONGODB_URI, { useNewUrlParser:true }) //Mongo will automatically create the db here if it doesnt exist, and then mongoose will automatically create any collections that dont already exist by going through your models
+    .catch(err => {
+      console.error(`ERROR: ${err.message}`);
+      console.error('\n === Did you remember to start `mongod`? === \n');
+      console.error(err);
+    });
+
+  app.listen(PORT, function () {
+    console.info(`Server listening on ${this.address().port}`);
+  }).on('error', err => {
+    console.error(err);
+  });
 }
 
-module.exports = { app };
+module.exports = app; // Export for testing

@@ -8,7 +8,9 @@ const sessionSchema = new mongoose.Schema({
   cashIn: {type: Number, required: false},
   cashOut: {type: Number, required: false},
   hours: {type: Number, required: false},
-  minutes: {type: Number, required: false}
+  minutes: {type: Number, required: false},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+
 });
 
 // Add `createdAt` and `updatedAt` fields
