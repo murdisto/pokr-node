@@ -12,7 +12,7 @@ const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: tr
 router.get('/', jwtAuth, (req, res, next) => {
   const userId = req.user.id;
   console.log("the user id is ", req.user.id);
-  Session.find() 
+  Session.find({userId}) 
     .sort({ createdAt: 'desc' })
     .then(sessions => {
       res.json(sessions);

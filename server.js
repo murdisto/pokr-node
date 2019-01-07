@@ -40,9 +40,9 @@ passport.use(jwtStrategy);
 const options = {session: false, failWithError: true};
 console.log();
 
-app.use('/', sessionsRouter);
+app.use('/sessions', sessionsRouter);
 app.use('/users', usersRouter);
-app.use('/login', authRouter);
+app.use('/auth', authRouter);
 
 
 app.use((req, res, next) => {
