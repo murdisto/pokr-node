@@ -19,11 +19,7 @@ const {CLIENT_ORIGIN, PORT, MONGODB_URI } = require('./config');
 
 const app = express();
 
-app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
-);
+
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
